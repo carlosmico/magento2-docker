@@ -1,4 +1,4 @@
-FROM php:7.1-fpm
+FROM php:7.3-fpm
 
 # install libraries required by the extensions
 RUN apt-get update \
@@ -9,7 +9,8 @@ RUN apt-get update \
     libmcrypt-dev \
     libpng-dev \
     libxslt1-dev \
-    libfreetype6-dev
+    libfreetype6-dev \
+    libzip-dev
 
 # install extensions
 RUN docker-php-ext-configure gd --with-jpeg-dir --with-freetype-dir && \
@@ -18,13 +19,13 @@ RUN docker-php-ext-configure gd --with-jpeg-dir --with-freetype-dir && \
       gd \
       intl \
       mbstring \
-      mcrypt \
       pdo_mysql \
       soap \
       xsl \
       zip \
       sockets
 
+RUN  pecl install mcrypt-1.0.2 && docker-php-ext-enable mcrypt
 
 RUN useradd -G www-data,root -u 1000 -d /home/devuser devuser
 RUN mkdir -p /home/devuser/.composer && chown -R devuser:devuser /home/devuser
